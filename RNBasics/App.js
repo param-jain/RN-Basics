@@ -1,77 +1,49 @@
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TextInput, Button} from 'react-native';
+import { Navigation } from "react-native-navigation";
+import { Provider } from "react-redux";
 
-import ListItem from './src/components/ListItem/ListItem';
+import AuthScreen from "./src/screens/Auth/Auth";
+import SharePlaceScreen from "./src/screens/SharePlace/SharePlace";
+import FindPlaceScreen from "./src/screens/FindPlace/FindPlace";
+import PlaceDetailScreen from "./src/screens/PlaceDetail/PlaceDetail";
+import SideDrawer from "./src/screens/SideDrawer/SideDrawer";
+import configureStore from "./src/store/configureStore";
 
-export default class App extends Component {
+const store = configureStore();
 
-  state = {
-    placeName: '',
-    places: []
+// Register Screens
+Navigation.registerComponent(
+  "awesome-places.AuthScreen",
+  () => AuthScreen,
+  store,
+  Provider
+);
+Navigation.registerComponent(
+  "awesome-places.SharePlaceScreen",
+  () => SharePlaceScreen,
+  store,
+  Provider
+);
+Navigation.registerComponent(
+  "awesome-places.FindPlaceScreen",
+  () => FindPlaceScreen,
+  store,
+  Provider
+);
+Navigation.registerComponent(
+  "awesome-places.PlaceDetailScreen",
+  () => PlaceDetailScreen,
+  store,
+  Provider
+);
+Navigation.registerComponent(
+  "awesome-places.SideDrawer",
+  () => SideDrawer
+);
+
+// Start a App
+Navigation.startSingleScreenApp({
+  screen: {
+    screen: "awesome-places.AuthScreen",
+    title: "Login"
   }
-
-  placeNameChangedHandler = (val) => {
-    this.setState({
-      placeName: val
-    });
-  }
-
-  placeSubmitHandler = () => {
-    if (this.state.placeName.trim() === "") {
-      return;
-    }
-
-    this.setState(prevState => {
-      return {
-        places: prevState.places.concat(prevState.placeName)
-      }
-    })
-  }
-
-  render() {
-    const placesOutput = this.state.places.map((place, i) => (
-      <ListItem key={i} placeName={place} />
-    ));
-
-    return (
-      <View style={styles.container}>
-        <View style={styles.inputContainer}>
-          <TextInput 
-            value={this.state.placeName} 
-            placeholder="An Awesome Place "
-            onChangeText={this.placeNameChangedHandler} 
-            style={styles.placeInput}
-            /> 
-          <Button title="Add" style={styles.placeButton} onPress={this.placeSubmitHandler} />
-        </View>
-          {placesOutput}
-        <View>
-
-        </View>
-      </View>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 30,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-   inputContainer: {
-    // flex: 1,
-     flexDirection: 'row',
-     justifyContent: "space-between",
-     alignItems: 'center',
-     width: "100%"
-   },
-   placeInput: {
-    width: '70%'
-   },
-   placeButton: {
-    width: '30%'
-   }
 });
